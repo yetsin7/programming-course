@@ -1,0 +1,66 @@
+{
+  "id": 11,
+  "slug": "exceptions",
+  "phase": 2,
+  "title": "Errores y recuperación",
+  "minutes": 120,
+  "objectives": [
+    "Distinguir errores de sintaxis y de ejecución.",
+    "Capturar excepciones específicas.",
+    "Comunicar un fallo sin esconderlo."
+  ],
+  "concepts": [
+    "SyntaxError indica que el archivo no se pudo interpretar como código válido. ValueError, KeyError y FileNotFoundError son excepciones que pueden ocurrir durante una ejecución. Un traceback muestra el recorrido hasta el fallo; comienza por la última línea para conocer su tipo y luego encuentra la línea de tu archivo que lo provocó.",
+    "try rodea una operación que puede fallar; except ValueError trata ese tipo de fallo. Captura lo que sabes manejar y deja visible lo inesperado. Un except sin tipo seguido de pass convierte fallos reales en silencios y puede dejar datos incompletos. Mantén el bloque try pequeño para saber qué operación estás protegiendo.",
+    "Una función de dominio puede lanzar ValueError con un mensaje técnico en inglés cuando una regla se viola. La capa de interfaz convierte esa condición en un mensaje localizado. No muestres al usuario un traceback con rutas internas; tampoco lo borres del diagnóstico del desarrollador. Error técnico y comunicación al usuario sirven a públicos distintos.",
+    "La pregunta es qué recuperación tiene sentido. Para una entrada mal escrita puedes solicitar otra; para un archivo opcional ausente puedes usar un estado inicial; para un archivo de cuentas corrupto conviene detenerse y preservar una copia, no reemplazarlo por una lista vacía. El valor alternativo depende de la importancia de lo que se pierde.",
+    "El ejemplo convierte un texto inválido y conserva un resultado None para representar ausencia de valor. Eso no significa que None sea siempre la mejor política. Define tu contrato y prueba el camino exitoso y el fallido. El ejercicio 06 adopta una política precisa que el comprobador puede verificar."
+  ],
+  "output": "None\n3\n",
+  "walkthrough": [
+    "int('three') falla en tiempo de ejecución.",
+    "except ValueError maneja únicamente ese tipo.",
+    "La segunda conversión funciona y no entra al except."
+  ],
+  "exercises": [
+    [
+      "Completa practice/06-parse-quantity.py: retorna entero no negativo o None.",
+      "Separa el fallo de conversión del rechazo de un negativo.",
+      "'4' da 4; '0' da 0; '-1', 'three' y '' dan None. Recibe str, no cualquier objeto."
+    ],
+    [
+      "Provoca FileNotFoundError con una lectura de un archivo inexistente en study-work.",
+      "Lee el traceback antes de capturarlo.",
+      "Path('study-work/missing.txt').read_text() falla. Captura FileNotFoundError solo si tu caso tiene una recuperación definida."
+    ],
+    [
+      "Explica por qué except Exception: pass sería dañino al guardar un pedido.",
+      "Piensa qué cree el llamador después del silencio.",
+      "Puede creer que se guardó cuando falló. Reporta el fallo y conserva el estado anterior."
+    ]
+  ],
+  "mistakes": [
+    "Capturar todos los errores sin recuperación.",
+    "Devolver cero ante cualquier fallo y confundir error con valor válido."
+  ],
+  "quiz": {
+    "question": "¿Qué excepción esperas de int('abc')?",
+    "options": [
+      "ValueError.",
+      "FileNotFoundError.",
+      "IndexError."
+    ],
+    "correct": 0,
+    "explanation": "La cadena no representa un entero válido."
+  },
+  "mastery": [
+    "Leo un traceback y localizo mi instrucción.",
+    "Elijo una excepción concreta.",
+    "No confundo ausencia de resultado con cero."
+  ],
+  "references": [
+    "errors"
+  ],
+  "example": "examples/11-exceptions.py",
+  "command": "python examples/11-exceptions.py"
+}
