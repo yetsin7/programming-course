@@ -1,91 +1,51 @@
 # Programming Course
 
-An offline, practice-first Python course for a complete beginner using Windows.
-Learner-facing lessons and interface strings live in `locales/es/`. Source code,
-identifiers, docstrings, filenames, and technical documentation use English.
+Curso interactivo de Python con dos modos de ejecución.
 
-## Start
+## Aplicación de escritorio: Python instalado en tu laptop
 
-Open `index.html` in a modern browser. No server, account, payment, or internet
-connection is required to read the course. Start at lesson 01 and follow the
-numbered route. Every lesson includes an editable browser console powered by
-Pyodide, so basic Python practice does not require installing Python. The first
-execution needs internet to download the runtime. Python 3.13 is the tested
-baseline for local runnable examples; the browser runtime is Python 3.12.
-Virtual environments, desktop packages, local files and server projects still
-need a local Python installation.
+Este es el modo recomendado en Windows. La aplicación Electron busca y prueba automáticamente:
+
+1. `.venv\\Scripts\\python.exe` o `venv\\Scripts\\python.exe` si existen.
+2. `py -3`.
+3. `python`.
+4. `python3`.
+
+Solo se selecciona un intérprete que responda correctamente a una prueba real. Las celdas usan ese Python local, por lo que pueden aprovechar módulos y capacidades del intérprete instalado.
 
 ```powershell
 Set-Location C:\Dev\programming-course
-python examples/01-first-program.py
+pnpm install
+pnpm start
 ```
 
-## Curso para niños
+La instalación de dependencias solo es necesaria la primera vez o cuando cambie `package.json`.
 
-`python-for-children/` is a separate, Spanish-language interactive course for
-young beginners. It introduces Python through 32 short missions, saves progress
-in the browser, and includes an in-page Python editor powered by Pyodide. Open
-its `index.html` directly; Python is not needed to run the lessons. The first
-execution needs an internet connection to download the runtime. See
-`python-for-children/readme.md` for startup and family guidance.
+## Navegador local: Python instalado + respaldo Pyodide
 
-The web reader explains setup, study habits, commands, projects, assessments,
-and the graduation rubric in Spanish. Do not inspect exercise solutions before
-making a recorded attempt. Browser progress is local to the browser and this
-file's location; use the reader's export/import controls to back it up.
-
-## Layout
-
-- `locales/es/lessons/`: authored lesson content and delayed exercise answers.
-- `locales/es/projects/`: project specifications, milestones and acceptance cases.
-- `locales/es/study-plan.json`: schedule, study habits and troubleshooting.
-- `examples/`: runnable, self-contained examples for the numbered lessons.
-- `practice/`: editable exercise starters; incomplete bodies are intentional.
-- `solutions/`: completed reference implementations, separate from starters.
-- `projects/`: project briefs in the reader and runnable reference projects.
-- `assets/`: course reader styles, scripts, and generated offline content.
-- `scripts/`: build and verification commands.
-- `build/`: verification evidence, isolated dependency environments, and reports.
-
-## Verification
+Si no quieres instalar Electron, puedes usar el servidor local incluido:
 
 ```powershell
-python scripts/build-course.py
-python scripts/verify-course.py
-python scripts/check-practice.py --reference
-python scripts/check-practice.py --exercise 01
+Set-Location C:\Dev\programming-course
+pnpm web
 ```
 
-The first three commands verify the delivered reference materials. The last
-command checks the learner's first exercise and initially fails until completed.
-Run `python scripts/check-practice.py --help` for available options.
+Se abrirá `http://127.0.0.1:4173`. El servidor de Node busca y prueba el Python instalado en tu laptop y las celdas lo usan directamente. Si no encuentra un intérprete utilizable, el navegador cae automáticamente a Pyodide.
 
-The final web API requires third-party dependencies. Its README and lesson 27
-describe an isolated environment; earlier lessons use the standard library.
-Dependency locks record the tested release set, not an assertion that those
-versions will remain current indefinitely.
+No abras `index.html` directamente desde el Explorador de Windows. Una URL `file://` tiene origen `null` y Chromium bloquea el Web Worker utilizado por Pyodide.
 
-After installing the API dependencies, include that project in full validation:
+## Actualizar el proyecto
 
 ```powershell
-python scripts/verify-course.py --api-python projects/05-task-api/build/api-env/Scripts/python.exe
+git pull origin main
+pnpm install
+pnpm start
 ```
 
-## Scope
+## Comprobar los archivos JavaScript
 
-The curriculum progresses from first instructions to independently building,
-testing, reviewing, and operating a small application. Graduation is based on
-demonstrated skills and an independently adapted final project, not reading
-completion. Professional expertise continues through real projects, feedback,
-and maintenance; this course does not promise employment or expertise by a date.
+```powershell
+pnpm check
+```
 
-The reference API is a local, unauthenticated learning application. The reader
-includes a production hardening and deployment lab; no public deployment is
-performed by installing or running this course.
-
-All lesson explanations and exercises are original. Official references are
-linked in the reader for further reading and API verification.
-
-Test modules use unittest's required importable `test_*.py` naming convention;
-all other authored multiword filenames use kebab-case. `Dockerfile` retains
-Docker's conventional required build filename.
+La ejecución de una celda tiene un límite de 15 segundos y un límite de salida para evitar procesos accidentales que bloqueen la aplicación.
