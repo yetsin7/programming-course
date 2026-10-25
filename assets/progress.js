@@ -5,7 +5,7 @@ const STORAGE_KEY = "python-programming-course-v1";
 
 /** Construct independent empty progress records for a new learner. */
 function emptyProgress() {
-  return { version: 1, completed: [], notes: {}, checks: {}, quizzes: {} };
+  return { version: 1, completed: [], notes: {}, checks: {}, quizzes: {}, drafts: {} };
 }
 
 /** Reject incompatible backups, excessive notes and unknown lesson identifiers. */
@@ -22,13 +22,15 @@ function validateProgress(candidate) {
     }
     if (!result.completed.includes(identifier)) result.completed.push(identifier);
   }
-  for (const field of ["notes", "checks", "quizzes"]) {
+  for (const field of ["notes", "checks", "quizzes", "drafts"]) {
     const records = candidate[field] || {};
     if (typeof records !== "object" || Array.isArray(records)) throw new Error("Invalid progress fields.");
     for (const [identifier, value] of Object.entries(records)) {
       if (!validIds.has(identifier)) throw new Error("Unknown lesson identifier.");
       if (field === "notes") {
         if (typeof value !== "string" || value.length > 10000) throw new Error("Invalid note size.");
+      } else if (field === "drafts") {
+        if (typeof value !== "string" || value.length > 20000) throw new Error("Invalid draft size.");
       } else if (field === "checks") {
         if (!Array.isArray(value) || value.length !== 3) throw new Error("Invalid mastery checklist.");
         for (const checked of value) if (typeof checked !== "boolean") throw new Error("Invalid checklist value.");
@@ -94,7 +96,7 @@ async function importProgress(event) {
   const file = event.target.files[0];
   if (!file) return;
   try {
-    if (file.size > 1000000) throw new Error("Progress document exceeds the size limit.");
+    if (file.size > 2000000) throw new Error("Progress document exceeds the size limit.");
     const restored = validateProgress(JSON.parse(await file.text()));
     learnerProgress = restored;
     const persisted = saveProgress();

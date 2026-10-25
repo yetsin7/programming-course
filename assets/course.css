@@ -82,6 +82,29 @@ code { font-family: "Cascadia Code", Consolas, monospace; font-size: .9em; }
 .code-toolbar { background: #254b3e; color: #d5e7d0; border-radius: 9px 9px 0 0; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12px; }
 .code-toolbar span { overflow-wrap: anywhere; }
 .code-toolbar button { background: transparent; border-color: #749184; color: white; font-size: 11px; white-space: nowrap; }
+.python-playground { margin-top: 28px; padding: 23px; border: 1px solid #c9d8c9; border-radius: 10px; background: #f3f7f0; }
+.python-playground > h3 { margin-top: 0; }
+.python-playground > p, .python-limitations p { color: var(--muted); font-size: 13px; }
+.python-playground > .browser-note { padding: 12px 15px; border-left: 3px solid #c38b27; background: #fff5d8; color: #554b2c; }
+.python-playground > label { display: block; margin: 14px 0 6px; font-size: 13px; font-weight: 650; }
+.python-playground > label span { color: var(--muted); font-weight: 400; }
+#python-code-editor, #python-input { width: 100%; min-height: 0; resize: vertical; padding: 14px; border: 1px solid #718777; border-radius: 7px; font: 13px/1.6 "Cascadia Code", Consolas, monospace; tab-size: 4; }
+#python-code-editor { min-height: 190px; color: #e6f2dc; background: #19382f; }
+#python-input { min-height: 64px; color: var(--ink); background: white; }
+.python-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+.python-actions button { padding: 9px 14px; border: 1px solid #22644f; border-radius: 7px; color: white; background: #22644f; font-size: 13px; font-weight: 600; }
+.python-actions button[data-python-action="reset"] { color: var(--ink); border-color: var(--line); background: white; }
+.python-actions button:disabled { cursor: wait; opacity: .65; }
+.python-terminal { overflow: hidden; margin-top: 18px; border: 1px solid #343147; border-radius: 8px; color: #f8f6ff; background: #211f30; }
+.python-terminal-heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding: 10px 13px; color: #dddbed; background: #343147; font-size: 12px; }
+.python-terminal-heading span { color: #c6c2d9; }
+#python-output { min-height: 68px; max-height: 260px; overflow: auto; margin: 0; padding: 15px; color: #d7f5d8; white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.6 "Cascadia Code", Consolas, monospace; }
+.python-download { padding: 9px 13px 2px; background: #292738; }
+.python-download progress { display: block; width: 100%; height: 10px; accent-color: #8be09b; }
+.python-download span { display: block; margin-top: 5px; color: #e1dff0; font-size: 11px; }
+#python-status { margin: 0; padding: 8px 13px; border-top: 1px solid #39374a; color: #c6c2d9; font-size: 11px; }
+.python-limitations { margin-top: 10px; font-size: 13px; }
+.python-limitations p { margin-bottom: 0; padding: 12px 16px; border-left: 2px solid #9db197; background: white; }
 .exercise { padding: 24px 0; border-top: 1px solid var(--line); }
 .exercise h3 { margin: 0 0 18px; font-weight: 600; font-size: 17px; line-height: 1.5; }
 .exercise-number { display: inline-grid; place-items: center; width: 27px; height: 27px; border-radius: 6px; background: #e4eadf; font-size: 12px; margin-right: 10px; }

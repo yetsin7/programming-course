@@ -64,6 +64,37 @@ function referencesMarkup(lesson) {
   return markup + "</ul>";
 }
 
+/** Render a browser-based Python console beside each lesson's runnable example. */
+function pythonPlaygroundMarkup(lesson) {
+  const code = Object.prototype.hasOwnProperty.call(learnerProgress.drafts, lesson.id)
+    ? learnerProgress.drafts[lesson.id] : lesson.code;
+  return '<section class="python-playground" aria-label="Editor de Python en el navegador">' +
+    '<h3>Practica Python aquí</h3>' +
+    '<p>Edita el ejemplo y ejecútalo sin instalar Python. La primera vez se necesita internet para descargar el intérprete.</p>' +
+    (lesson.browserNote ? '<p class="browser-note">' + escapeHtml(lesson.browserNote) + "</p>" : "") +
+    '<label for="python-code-editor">Código Python</label>' +
+    '<textarea id="python-code-editor" maxlength="20000" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" ' +
+    'rows="10" data-lesson-id="' + lesson.id + '">' + escapeHtml(code) + "</textarea>" +
+    '<label for="python-input">Respuestas para input() <span>(una por línea)</span></label>' +
+    '<textarea id="python-input" rows="3" autocomplete="off">' +
+    escapeHtml(lesson.stdin || "") + "</textarea>" +
+    '<div class="python-actions"><button id="run-python" type="button" data-python-action="run"' +
+    (isBrowserPythonBusy() ? " disabled" : "") + '>▶ Ejecutar en el navegador</button>' +
+    '<button type="button" data-python-action="reset">Restaurar ejemplo</button></div>' +
+    '<section class="python-terminal" aria-label="Consola de Python">' +
+    '<div class="python-terminal-heading"><strong>Consola de Python</strong>' +
+    '<span>Pyodide · se ejecuta en tu navegador</span></div>' +
+    '<pre id="python-output" aria-live="polite">La consola está lista. Pulsa «Ejecutar en el navegador».</pre>' +
+    '<div class="python-download" hidden><progress id="python-download-progress" aria-label="Descarga del intérprete"></progress>' +
+    '<span id="python-download-caption"></span></div>' +
+    '<p id="python-status" role="status">' +
+    (isBrowserPythonBusy() ? "Hay otro programa en ejecución. Espera a que termine." :
+      "La primera ejecución requiere conexión a internet.") + "</p></section>" +
+    '<details class="python-limitations"><summary>Qué puede ejecutar este editor</summary>' +
+    '<p>Tu código se ejecuta en el navegador y no se envía al curso. Este editor sirve para practicar Python y ejecutar ejemplos compatibles con Pyodide. No sustituye Python local para crear entornos virtuales, instalar paquetes de escritorio, acceder a tus archivos, iniciar servidores o completar proyectos que dependan del sistema operativo.</p></details>' +
+    "</section>";
+}
+
 /** Compose the full reader without loading external fonts, libraries or lesson files. */
 function lessonMarkup(lesson) {
   let markup = '<article class="lesson" data-lesson="' + lesson.id + '"><header class="page-heading">' +
@@ -79,7 +110,8 @@ function lessonMarkup(lesson) {
     '</button></div><pre class="source-code"><code>' + escapeHtml(lesson.code) + "</code></pre>" +
     "<h3>" + escapeHtml(translate("run")) + "</h3>" + commandMarkup(lesson.command) +
     (lesson.stdin ? "<h3>" + escapeHtml(translate("input")) + "</h3>" + commandMarkup(lesson.stdin) : "") +
-    "<h3>" + escapeHtml(translate("output")) + "</h3>" + commandMarkup(lesson.output));
+    "<h3>" + escapeHtml(translate("output")) + "</h3>" + commandMarkup(lesson.output) +
+    pythonPlaygroundMarkup(lesson));
   markup += sectionMarkup(translate("walkthrough"), listMarkup(lesson.walkthrough, true));
   markup += sectionMarkup(translate("practice"), exercisesMarkup(lesson));
   markup += sectionMarkup(translate("mistakes"), listMarkup(lesson.mistakes), "mistake-panel");

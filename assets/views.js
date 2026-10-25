@@ -24,6 +24,10 @@ function homeMarkup() {
       '</h3><span class="phase-count">' + completed + " / 4 · " + escapeHtml(translate("completedCount")) + "</span></a>";
   }
   markup += "</div></section>";
+  markup += sectionMarkup("Python en tu navegador",
+    "<p>Abre cualquier lección para editar y ejecutar su ejemplo sin instalar Python. La primera ejecución necesita internet para descargar el intérprete.</p>" +
+    "<p>El editor sirve para practicar y ejecutar ejemplos compatibles. Para entornos virtuales, paquetes de escritorio, archivos locales y servidores del curso necesitarás Python instalado en Windows.</p>",
+    "goal-panel");
   markup += sectionMarkup(translate("whyPython"), paragraphsMarkup([COURSE.languageChoice]), "goal-panel");
   markup += sectionMarkup(translate("daily"), listMarkup(COURSE.plan.firstSession, true));
   return markup + '<p class="local-notice">' + escapeHtml(translate("localNotice")) + "</p>";

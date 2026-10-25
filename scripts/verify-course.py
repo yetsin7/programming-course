@@ -15,7 +15,7 @@ def authored_files() -> list[Path]:
     """Enumerate source materials while excluding generated environments and evidence."""
     paths = []
     for path in ROOT.rglob("*"):
-        if path.is_file() and not {"build", "__pycache__", ".git"}.intersection(path.relative_to(ROOT).parts):
+        if path.is_file() and not {"build", "__pycache__", ".git", ".venv"}.intersection(path.relative_to(ROOT).parts):
             paths.append(path)
     return paths
 

@@ -8,12 +8,26 @@ identifiers, docstrings, filenames, and technical documentation use English.
 
 Open `index.html` in a modern browser. No server, account, payment, or internet
 connection is required to read the course. Start at lesson 01 and follow the
-numbered route. Python 3.13 is the tested baseline for runnable examples.
+numbered route. Every lesson includes an editable browser console powered by
+Pyodide, so basic Python practice does not require installing Python. The first
+execution needs internet to download the runtime. Python 3.13 is the tested
+baseline for local runnable examples; the browser runtime is Python 3.12.
+Virtual environments, desktop packages, local files and server projects still
+need a local Python installation.
 
 ```powershell
 Set-Location C:\Dev\programming-course
 python examples/01-first-program.py
 ```
+
+## Curso para niños
+
+`python-for-children/` is a separate, Spanish-language interactive course for
+young beginners. It introduces Python through 32 short missions, saves progress
+in the browser, and includes an in-page Python editor powered by Pyodide. Open
+its `index.html` directly; Python is not needed to run the lessons. The first
+execution needs an internet connection to download the runtime. See
+`python-for-children/readme.md` for startup and family guidance.
 
 The web reader explains setup, study habits, commands, projects, assessments,
 and the graduation rubric in Spanish. Do not inspect exercise solutions before
