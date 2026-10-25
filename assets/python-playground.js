@@ -7,9 +7,23 @@ let browserPythonPending = null;
 let browserPythonLesson = null;
 let browserPythonInitializationTimer = null;
 let browserPythonExecutionTimer = null;
+let desktopPythonInfo = null;
+let desktopPythonBusy = false;
 
 function isBrowserPythonBusy() {
-  return browserPythonPending !== null || browserPythonLesson !== null;
+  return desktopPythonBusy || browserPythonPending !== null || browserPythonLesson !== null;
+}
+
+function hasDesktopPythonBridge() {
+  return Boolean(window.courseDesktop && window.courseDesktop.isElectron &&
+    typeof window.courseDesktop.detectPython === "function" &&
+    typeof window.courseDesktop.runPython === "function");
+}
+
+function updatePythonRuntime(text, lessonId = visiblePythonLesson()) {
+  if (lessonId !== visiblePythonLesson()) return;
+  const runtime = document.getElementById("python-runtime-label");
+  if (runtime) runtime.textContent = text;
 }
 
 function visiblePythonLesson() {
@@ -154,9 +168,102 @@ function createBrowserPythonWorker() {
   });
 }
 
+async function runPreferredPython(button) {
+  if (!hasDesktopPythonBridge()) {
+    runBrowserPython(button);
+    return;
+  }
+  if (isBrowserPythonBusy()) {
+    announce("Espera a que termine el programa actual antes de ejecutar otro.");
+    return;
+  }
+
+  const editor = document.getElementById("python-code-editor");
+  const input = document.getElementById("python-input");
+  const lessonId = Number(editor.dataset.lessonId);
+  if (!editor.value.trim()) {
+    announce("Escribe una instrucción Python antes de ejecutar.");
+    editor.focus();
+    return;
+  }
+  const lesson = COURSE.lessons.find((item) => item.id === lessonId);
+  const request = { code: editor.value, input: input.value, filename: lesson.example };
+  learnerProgress.drafts[lessonId] = editor.value;
+  saveProgress();
+
+  desktopPythonBusy = true;
+  button.disabled = true;
+  document.getElementById("python-output").textContent = "";
+  updatePythonStatus("Buscando y comprobando Python instalado…", lessonId);
+
+  let info;
+  try {
+    info = desktopPythonInfo || await window.courseDesktop.detectPython();
+    desktopPythonInfo = info;
+  } catch (error) {
+    info = { available: false, error: error.message || String(error) };
+  }
+
+  if (!info.available) {
+    desktopPythonBusy = false;
+    button.disabled = false;
+    updatePythonRuntime("Python local no encontrado · respaldo Pyodide", lessonId);
+    updatePythonStatus("No se encontró Python local. Usando Pyodide como respaldo…", lessonId);
+    runBrowserPython(button);
+    return;
+  }
+
+  updatePythonRuntime("Python " + info.version + " local · " + info.executable, lessonId);
+  updatePythonStatus("Ejecutando con Python local…", lessonId);
+  try {
+    const result = await window.courseDesktop.runPython(request);
+    if (result.unavailable) {
+      desktopPythonInfo = null;
+      desktopPythonBusy = false;
+      button.disabled = false;
+      updatePythonStatus("Python local dejó de estar disponible. Usando Pyodide como respaldo…", lessonId);
+      runBrowserPython(button);
+      return;
+    }
+    if (result.python) {
+      desktopPythonInfo = result.python;
+      updatePythonRuntime("Python " + result.python.version + " local · " + result.python.executable, lessonId);
+    }
+    appendPythonOutput(result.stdout || "", lessonId);
+    appendPythonOutput(result.stderr || "", lessonId);
+    if (result.timedOut) {
+      updatePythonStatus("El programa tardó demasiado y se detuvo.", lessonId);
+      announce("El programa tardó demasiado y se detuvo.");
+    } else if (result.ok) {
+      updatePythonStatus("Programa terminado con Python local. Puedes editarlo y volver a ejecutar.", lessonId);
+    } else {
+      if (result.error) appendPythonOutput(result.error + "\n", lessonId);
+      updatePythonStatus("Python terminó con un error. Revisa la consola y prueba otra vez.", lessonId);
+    }
+  } catch (error) {
+    appendPythonOutput((error.message || String(error)) + "\n", lessonId);
+    updatePythonStatus("No se pudo ejecutar Python local. Revisa la consola.", lessonId);
+  } finally {
+    desktopPythonBusy = false;
+    button.disabled = false;
+  }
+}
+
 function runBrowserPython(button) {
   if (isBrowserPythonBusy()) {
     announce("Espera a que termine el programa actual antes de ejecutar otro.");
+    return;
+  }
+  if (location.protocol === "file:") {
+    const output = document.getElementById("python-output");
+    if (output) output.textContent =
+      "El navegador bloquea los Web Workers cuando abres index.html directamente con file://.\n\n" +
+      "Desde C:\\Dev\\programming-course usa:\n" +
+      "  pnpm start   → Electron + Python instalado en tu laptop\n" +
+      "  pnpm web     → navegador + Pyodide\n";
+    updatePythonRuntime("file:// bloqueado para Web Workers");
+    updatePythonStatus("Abre el curso con «pnpm start» o «pnpm web».");
+    button.disabled = false;
     return;
   }
   const editor = document.getElementById("python-code-editor");
@@ -208,8 +315,19 @@ function resetBrowserPython() {
   document.getElementById("python-input").value = lesson.stdin || "";
   learnerProgress.drafts[lessonId] = lesson.code;
   saveProgress();
-  document.getElementById("python-output").textContent = "La consola está lista. Pulsa «Ejecutar en el navegador».";
-  updatePythonStatus("La primera ejecución requiere conexión a internet.", lessonId);
+  document.getElementById("python-output").textContent = "La consola está lista. Pulsa «Ejecutar Python».";
+  if (hasDesktopPythonBridge()) {
+    updatePythonRuntime(desktopPythonInfo?.available
+      ? "Python " + desktopPythonInfo.version + " local · " + desktopPythonInfo.executable
+      : "Detectando Python local…", lessonId);
+    updatePythonStatus("La aplicación buscará automáticamente el Python instalado en tu equipo.", lessonId);
+  } else if (location.protocol === "file:") {
+    updatePythonRuntime("file:// · usa pnpm start o pnpm web", lessonId);
+    updatePythonStatus("El navegador bloquea Web Workers desde file://.", lessonId);
+  } else {
+    updatePythonRuntime("Pyodide · se ejecuta en tu navegador", lessonId);
+    updatePythonStatus("La primera ejecución requiere conexión a internet.", lessonId);
+  }
   editor.focus();
 }
 
@@ -222,6 +340,6 @@ document.getElementById("main-content").addEventListener("input", (event) => {
 document.getElementById("main-content").addEventListener("click", (event) => {
   const button = event.target.closest("[data-python-action]");
   if (!button) return;
-  if (button.dataset.pythonAction === "run") runBrowserPython(button);
+  if (button.dataset.pythonAction === "run") runPreferredPython(button);
   else if (button.dataset.pythonAction === "reset") resetBrowserPython();
 });
