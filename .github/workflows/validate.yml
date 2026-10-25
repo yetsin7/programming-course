@@ -1,0 +1,26 @@
+name: Validate course
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check JavaScript syntax
+        run: |
+          node --check electron/main.cjs
+          node --check electron/preload.cjs
+          node --check scripts/serve.mjs
+          node --check assets/python-playground.js
+          node --check assets/reader.js
+          node --check assets/views.js
+          node --check assets/application.js
+      - name: Check Python examples
+        run: python3 -m compileall -q examples practice
