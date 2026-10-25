@@ -24,9 +24,9 @@ function homeMarkup() {
       '</h3><span class="phase-count">' + completed + " / 4 · " + escapeHtml(translate("completedCount")) + "</span></a>";
   }
   markup += "</div></section>";
-  markup += sectionMarkup("Python en tu navegador",
-    "<p>Abre cualquier lección para editar y ejecutar su ejemplo sin instalar Python. La primera ejecución necesita internet para descargar el intérprete.</p>" +
-    "<p>El editor sirve para practicar y ejecutar ejemplos compatibles. Para entornos virtuales, paquetes de escritorio, archivos locales y servidores del curso necesitarás Python instalado en Windows.</p>",
+  markup += sectionMarkup("Python local automático, con respaldo web",
+    "<p>Con <code>pnpm start</code> el curso se abre como aplicación Electron y busca automáticamente un Python utilizable en tu equipo. Prueba un entorno virtual del curso y los comandos habituales de Windows antes de ejecutar cada práctica con Python local.</p>" +
+    "<p>Con <code>pnpm web</code> se abre en el navegador y usa Pyodide. No abras <code>index.html</code> directamente con <code>file://</code>: los navegadores bloquean los Web Workers en ese modo.</p>",
     "goal-panel");
   markup += sectionMarkup(translate("whyPython"), paragraphsMarkup([COURSE.languageChoice]), "goal-panel");
   markup += sectionMarkup(translate("daily"), listMarkup(COURSE.plan.firstSession, true));
