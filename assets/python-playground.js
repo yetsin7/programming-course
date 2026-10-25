@@ -20,6 +20,36 @@ function hasDesktopPythonBridge() {
     typeof window.courseDesktop.runPython === "function");
 }
 
+function hasLocalServerPythonBridge() {
+  return (location.protocol === "http:" || location.protocol === "https:") &&
+    (location.hostname === "127.0.0.1" || location.hostname === "localhost");
+}
+
+function localPythonBridge() {
+  if (hasDesktopPythonBridge()) return window.courseDesktop;
+  if (!hasLocalServerPythonBridge()) return null;
+  return {
+    detectPython: async () => {
+      const response = await fetch("/api/python/detect", { cache: "no-store" });
+      if (!response.ok) throw new Error("No se pudo consultar Python local.");
+      return response.json();
+    },
+    runPython: async (request) => {
+      const response = await fetch("/api/python/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(request)
+      });
+      if (!response.ok) throw new Error("No se pudo ejecutar Python local.");
+      return response.json();
+    }
+  };
+}
+
+function hasLocalPythonBridge() {
+  return Boolean(localPythonBridge());
+}
+
 function updatePythonRuntime(text, lessonId = visiblePythonLesson()) {
   if (lessonId !== visiblePythonLesson()) return;
   const runtime = document.getElementById("python-runtime-label");
@@ -169,7 +199,8 @@ function createBrowserPythonWorker() {
 }
 
 async function runPreferredPython(button) {
-  if (!hasDesktopPythonBridge()) {
+  const bridge = localPythonBridge();
+  if (!bridge) {
     runBrowserPython(button);
     return;
   }
@@ -198,7 +229,7 @@ async function runPreferredPython(button) {
 
   let info;
   try {
-    info = desktopPythonInfo || await window.courseDesktop.detectPython();
+    info = desktopPythonInfo || await bridge.detectPython();
     desktopPythonInfo = info;
   } catch (error) {
     info = { available: false, error: error.message || String(error) };
@@ -216,7 +247,7 @@ async function runPreferredPython(button) {
   updatePythonRuntime("Python " + info.version + " local · " + info.executable, lessonId);
   updatePythonStatus("Ejecutando con Python local…", lessonId);
   try {
-    const result = await window.courseDesktop.runPython(request);
+    const result = await bridge.runPython(request);
     if (result.unavailable) {
       desktopPythonInfo = null;
       desktopPythonBusy = false;
@@ -316,7 +347,7 @@ function resetBrowserPython() {
   learnerProgress.drafts[lessonId] = lesson.code;
   saveProgress();
   document.getElementById("python-output").textContent = "La consola está lista. Pulsa «Ejecutar Python».";
-  if (hasDesktopPythonBridge()) {
+  if (hasLocalPythonBridge()) {
     updatePythonRuntime(desktopPythonInfo?.available
       ? "Python " + desktopPythonInfo.version + " local · " + desktopPythonInfo.executable
       : "Detectando Python local…", lessonId);
