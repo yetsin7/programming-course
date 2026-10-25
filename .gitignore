@@ -7,3 +7,6 @@ build/
 *.sqlite3-shm
 .env
 study-work/
+node_modules/
+dist/
+out/
