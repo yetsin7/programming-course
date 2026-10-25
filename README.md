@@ -21,16 +21,16 @@ pnpm start
 
 La instalación de dependencias solo es necesaria la primera vez o cuando cambie `package.json`.
 
-## Navegador: Pyodide
+## Navegador local: Python instalado + respaldo Pyodide
 
-Si no quieres Electron, sirve el curso por HTTP:
+Si no quieres instalar Electron, puedes usar el servidor local incluido:
 
 ```powershell
 Set-Location C:\Dev\programming-course
 pnpm web
 ```
 
-Se abrirá `http://127.0.0.1:4173`. En este modo las celdas usan Pyodide y la primera ejecución necesita internet para descargar el intérprete.
+Se abrirá `http://127.0.0.1:4173`. El servidor de Node busca y prueba el Python instalado en tu laptop y las celdas lo usan directamente. Si no encuentra un intérprete utilizable, el navegador cae automáticamente a Pyodide.
 
 No abras `index.html` directamente desde el Explorador de Windows. Una URL `file://` tiene origen `null` y Chromium bloquea el Web Worker utilizado por Pyodide.
 
