@@ -84,7 +84,7 @@ function pythonPlaygroundMarkup(lesson) {
     '<section class="python-terminal" aria-label="Consola de Python">' +
     '<div class="python-terminal-heading"><strong>Consola de Python</strong>' +
     '<span id="python-runtime-label">' +
-    escapeHtml(hasDesktopPythonBridge() ? "Detectando Python local…" :
+    escapeHtml(hasLocalPythonBridge() ? "Detectando Python local…" :
       (location.protocol === "file:" ? "file:// · usa pnpm start o pnpm web" : "Pyodide · se ejecuta en tu navegador")) +
     '</span></div>' +
     '<pre id="python-output" aria-live="polite">La consola está lista. Pulsa «Ejecutar Python».</pre>' +
@@ -92,11 +92,11 @@ function pythonPlaygroundMarkup(lesson) {
     '<span id="python-download-caption"></span></div>' +
     '<p id="python-status" role="status">' +
     (isBrowserPythonBusy() ? "Hay otro programa en ejecución. Espera a que termine." :
-      (hasDesktopPythonBridge() ? "La aplicación comprobará automáticamente el Python instalado en tu equipo." :
+      (hasLocalPythonBridge() ? "El curso comprobará automáticamente el Python instalado en tu equipo." :
         (location.protocol === "file:" ? "Abre el curso con «pnpm start» o «pnpm web»." :
           "Modo navegador: la primera ejecución requiere conexión a internet."))) + "</p></section>" +
     '<details class="python-limitations"><summary>Cómo decide qué Python ejecutar</summary>' +
-    '<p>La aplicación de escritorio prueba primero un entorno virtual del curso si existe y después los comandos habituales del sistema, incluidos <code>py -3</code>, <code>python</code> y <code>python3</code> en Windows. El navegador no puede iniciar programas instalados en tu laptop por sus reglas de seguridad, por eso usa Pyodide.</p></details>' +
+    '<p>Con <code>pnpm start</code> Electron usa un puente seguro hacia Python local. Con <code>pnpm web</code>, el servidor local de Node hace lo mismo desde el navegador. Ambos prueban primero un entorno virtual del curso y después <code>py -3</code>, <code>python</code> y <code>python3</code> en Windows. Pyodide queda como respaldo cuando no hay Python local.</p></details>' +
     "</section>";
 }
 
