@@ -64,13 +64,13 @@ function referencesMarkup(lesson) {
   return markup + "</ul>";
 }
 
-/** Render a browser-based Python console beside each lesson's runnable example. */
+/** Render a Python console that prefers the laptop's interpreter and keeps Pyodide as browser fallback. */
 function pythonPlaygroundMarkup(lesson) {
   const code = Object.prototype.hasOwnProperty.call(learnerProgress.drafts, lesson.id)
     ? learnerProgress.drafts[lesson.id] : lesson.code;
   return '<section class="python-playground" aria-label="Editor de Python en el navegador">' +
     '<h3>Practica Python aquí</h3>' +
-    '<p>Edita el ejemplo y ejecútalo sin instalar Python. La primera vez se necesita internet para descargar el intérprete.</p>' +
+    '<p>En Electron, el curso busca y prueba automáticamente el Python instalado en tu laptop. Si no encuentra uno utilizable, cae a Pyodide. En el navegador se usa Pyodide.</p>' +
     (lesson.browserNote ? '<p class="browser-note">' + escapeHtml(lesson.browserNote) + "</p>" : "") +
     '<label for="python-code-editor">Código Python</label>' +
     '<textarea id="python-code-editor" maxlength="20000" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" ' +
@@ -79,19 +79,24 @@ function pythonPlaygroundMarkup(lesson) {
     '<textarea id="python-input" rows="3" autocomplete="off">' +
     escapeHtml(lesson.stdin || "") + "</textarea>" +
     '<div class="python-actions"><button id="run-python" type="button" data-python-action="run"' +
-    (isBrowserPythonBusy() ? " disabled" : "") + '>▶ Ejecutar en el navegador</button>' +
+    (isBrowserPythonBusy() ? " disabled" : "") + '>▶ Ejecutar Python</button>' +
     '<button type="button" data-python-action="reset">Restaurar ejemplo</button></div>' +
     '<section class="python-terminal" aria-label="Consola de Python">' +
     '<div class="python-terminal-heading"><strong>Consola de Python</strong>' +
-    '<span>Pyodide · se ejecuta en tu navegador</span></div>' +
-    '<pre id="python-output" aria-live="polite">La consola está lista. Pulsa «Ejecutar en el navegador».</pre>' +
+    '<span id="python-runtime-label">' +
+    escapeHtml(hasDesktopPythonBridge() ? "Detectando Python local…" :
+      (location.protocol === "file:" ? "file:// · usa pnpm start o pnpm web" : "Pyodide · se ejecuta en tu navegador")) +
+    '</span></div>' +
+    '<pre id="python-output" aria-live="polite">La consola está lista. Pulsa «Ejecutar Python».</pre>' +
     '<div class="python-download" hidden><progress id="python-download-progress" aria-label="Descarga del intérprete"></progress>' +
     '<span id="python-download-caption"></span></div>' +
     '<p id="python-status" role="status">' +
     (isBrowserPythonBusy() ? "Hay otro programa en ejecución. Espera a que termine." :
-      "La primera ejecución requiere conexión a internet.") + "</p></section>" +
-    '<details class="python-limitations"><summary>Qué puede ejecutar este editor</summary>' +
-    '<p>Tu código se ejecuta en el navegador y no se envía al curso. Este editor sirve para practicar Python y ejecutar ejemplos compatibles con Pyodide. No sustituye Python local para crear entornos virtuales, instalar paquetes de escritorio, acceder a tus archivos, iniciar servidores o completar proyectos que dependan del sistema operativo.</p></details>' +
+      (hasDesktopPythonBridge() ? "La aplicación comprobará automáticamente el Python instalado en tu equipo." :
+        (location.protocol === "file:" ? "Abre el curso con «pnpm start» o «pnpm web»." :
+          "Modo navegador: la primera ejecución requiere conexión a internet."))) + "</p></section>" +
+    '<details class="python-limitations"><summary>Cómo decide qué Python ejecutar</summary>' +
+    '<p>La aplicación de escritorio prueba primero un entorno virtual del curso si existe y después los comandos habituales del sistema, incluidos <code>py -3</code>, <code>python</code> y <code>python3</code> en Windows. El navegador no puede iniciar programas instalados en tu laptop por sus reglas de seguridad, por eso usa Pyodide.</p></details>' +
     "</section>";
 }
 
