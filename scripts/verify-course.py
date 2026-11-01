@@ -15,7 +15,7 @@ def authored_files() -> list[Path]:
     """Enumerate source materials while excluding generated environments and evidence."""
     paths = []
     for path in ROOT.rglob("*"):
-        if path.is_file() and not {"build", "__pycache__", ".git", ".venv"}.intersection(path.relative_to(ROOT).parts):
+        if path.is_file() and not {"build", "__pycache__", ".git", ".venv", "node_modules"}.intersection(path.relative_to(ROOT).parts):
             paths.append(path)
     return paths
 
@@ -25,7 +25,7 @@ def verify_sources() -> int:
     checked_count = 0
     for path in authored_files():
         framework_test = re.fullmatch(r"test_[a-z]+\.py", path.name)
-        if not framework_test and path.name not in {"Dockerfile", ".gitignore", ".dockerignore"}:
+        if not framework_test and path.name not in {"Dockerfile", "README.md", ".gitignore", ".dockerignore"}:
             if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*(?:\.[a-z0-9]+)?", path.name):
                 raise AssertionError(f"Nonconforming file name: {path.relative_to(ROOT)}")
         if path.suffix not in {".py", ".js", ".css", ".html", ".json", ".md", ".yml", ".txt", ".csv"}:

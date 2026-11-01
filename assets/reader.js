@@ -64,42 +64,6 @@ function referencesMarkup(lesson) {
   return markup + "</ul>";
 }
 
-/** Render a Python console that prefers the laptop's interpreter and keeps Pyodide as browser fallback. */
-function pythonPlaygroundMarkup(lesson) {
-  const code = Object.prototype.hasOwnProperty.call(learnerProgress.drafts, lesson.id)
-    ? learnerProgress.drafts[lesson.id] : lesson.code;
-  return '<section class="python-playground" aria-label="Editor de Python en el navegador">' +
-    '<h3>Practica Python aquí</h3>' +
-    '<p>En Electron, el curso busca y prueba automáticamente el Python instalado en tu laptop. Si no encuentra uno utilizable, cae a Pyodide. En el navegador se usa Pyodide.</p>' +
-    (lesson.browserNote ? '<p class="browser-note">' + escapeHtml(lesson.browserNote) + "</p>" : "") +
-    '<label for="python-code-editor">Código Python</label>' +
-    '<textarea id="python-code-editor" maxlength="20000" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" ' +
-    'rows="10" data-lesson-id="' + lesson.id + '">' + escapeHtml(code) + "</textarea>" +
-    '<label for="python-input">Respuestas para input() <span>(una por línea)</span></label>' +
-    '<textarea id="python-input" rows="3" autocomplete="off">' +
-    escapeHtml(lesson.stdin || "") + "</textarea>" +
-    '<div class="python-actions"><button id="run-python" type="button" data-python-action="run"' +
-    (isBrowserPythonBusy() ? " disabled" : "") + '>▶ Ejecutar Python</button>' +
-    '<button type="button" data-python-action="reset">Restaurar ejemplo</button></div>' +
-    '<section class="python-terminal" aria-label="Consola de Python">' +
-    '<div class="python-terminal-heading"><strong>Consola de Python</strong>' +
-    '<span id="python-runtime-label">' +
-    escapeHtml(hasLocalPythonBridge() ? "Detectando Python local…" :
-      (location.protocol === "file:" ? "file:// · usa pnpm start o pnpm web" : "Pyodide · se ejecuta en tu navegador")) +
-    '</span></div>' +
-    '<pre id="python-output" aria-live="polite">La consola está lista. Pulsa «Ejecutar Python».</pre>' +
-    '<div class="python-download" hidden><progress id="python-download-progress" aria-label="Descarga del intérprete"></progress>' +
-    '<span id="python-download-caption"></span></div>' +
-    '<p id="python-status" role="status">' +
-    (isBrowserPythonBusy() ? "Hay otro programa en ejecución. Espera a que termine." :
-      (hasLocalPythonBridge() ? "El curso comprobará automáticamente el Python instalado en tu equipo." :
-        (location.protocol === "file:" ? "Abre el curso con «pnpm start» o «pnpm web»." :
-          "Modo navegador: la primera ejecución requiere conexión a internet."))) + "</p></section>" +
-    '<details class="python-limitations"><summary>Cómo decide qué Python ejecutar</summary>' +
-    '<p>Con <code>pnpm start</code> Electron usa un puente seguro hacia Python local. Con <code>pnpm web</code>, el servidor local de Node hace lo mismo desde el navegador. Ambos prueban primero un entorno virtual del curso y después <code>py -3</code>, <code>python</code> y <code>python3</code> en Windows. Pyodide queda como respaldo cuando no hay Python local.</p></details>' +
-    "</section>";
-}
-
 /** Compose the full reader without loading external fonts, libraries or lesson files. */
 function lessonMarkup(lesson) {
   let markup = '<article class="lesson" data-lesson="' + lesson.id + '"><header class="page-heading">' +
@@ -116,7 +80,8 @@ function lessonMarkup(lesson) {
     "<h3>" + escapeHtml(translate("run")) + "</h3>" + commandMarkup(lesson.command) +
     (lesson.stdin ? "<h3>" + escapeHtml(translate("input")) + "</h3>" + commandMarkup(lesson.stdin) : "") +
     "<h3>" + escapeHtml(translate("output")) + "</h3>" + commandMarkup(lesson.output) +
-    pythonPlaygroundMarkup(lesson));
+    '<aside class="external-practice"><strong>' + escapeHtml(translate("externalPracticeTitle")) +
+    '</strong><p>' + escapeHtml(translate("externalPracticeText")) + "</p></aside>");
   markup += sectionMarkup(translate("walkthrough"), listMarkup(lesson.walkthrough, true));
   markup += sectionMarkup(translate("practice"), exercisesMarkup(lesson));
   markup += sectionMarkup(translate("mistakes"), listMarkup(lesson.mistakes), "mistake-panel");

@@ -130,7 +130,13 @@ function handleQuizSubmit(event) {
   if (selected === null) { announce(translate("quizChoose")); return; }
   learnerProgress.quizzes[route.lesson.id] = Number(selected);
   saveProgress();
-  renderApplication();
+  const previousFeedback = event.target.querySelector(".quiz-feedback");
+  if (previousFeedback) previousFeedback.remove();
+  event.target.insertAdjacentHTML("beforeend", '<p class="quiz-feedback" role="status"><strong>' +
+    escapeHtml(translate(Number(selected) === route.lesson.quiz.correct ? "quizCorrect" : "quizIncorrect")) +
+    "</strong> " + escapeHtml(route.lesson.quiz.explanation) + "</p>");
+  const completionButton = document.getElementById("complete-lesson");
+  completionButton.disabled = !learnerProgress.completed.includes(route.lesson.id) && !canCompleteLesson(route.lesson);
 }
 
 /** Handle code copy, lesson completion and print actions delegated from the reader. */
