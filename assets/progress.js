@@ -5,7 +5,7 @@ const STORAGE_KEY = "python-programming-course-v1";
 
 /** Construct independent empty progress records for a new learner. */
 function emptyProgress() {
-  return { version: 1, completed: [], notes: {}, checks: {}, quizzes: {}, drafts: {} };
+  return { version: 1, completed: [], notes: {}, checks: {}, quizzes: {}, drafts: {}, lastLesson: null };
 }
 
 /** Reject incompatible backups, excessive notes and unknown lesson identifiers. */
@@ -39,6 +39,9 @@ function validateProgress(candidate) {
       }
       result[field][identifier] = value;
     }
+  }
+  if (Number.isInteger(candidate.lastLesson) && validIds.has(String(candidate.lastLesson))) {
+    result.lastLesson = candidate.lastLesson;
   }
   return result;
 }

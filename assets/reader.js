@@ -19,7 +19,7 @@ function quizMarkup(lesson) {
   if (selected !== undefined) {
     markup += '<p class="quiz-feedback" role="status"><strong>' +
       escapeHtml(translate(selected === lesson.quiz.correct ? "quizCorrect" : "quizIncorrect")) +
-      "</strong> " + escapeHtml(lesson.quiz.explanation) + "</p>";
+      "</strong> " + (selected === lesson.quiz.correct ? escapeHtml(lesson.quiz.explanation) : "") + "</p>";
   }
   return markup + "</form>";
 }

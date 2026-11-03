@@ -5,6 +5,6 @@
   "description": "Static Python courses for adults and children.",
   "scripts": {
     "build": "python scripts/build-course.py",
-    "check": "node --check assets/reader.js && node --check assets/views.js && node --check assets/application.js && node --check python-for-children/lessons.js && node --check python-for-children/advanced-lessons.js && node --check python-for-children/app.js"
+    "check": "node --check assets/course-session.js && node --check assets/reader.js && node --check assets/views.js && node --check assets/application.js && node --check python-for-children/lessons.js && node --check python-for-children/advanced-lessons.js && node --check python-for-children/learning-content.js && node --check python-for-children/ui-text.js && node --check python-for-children/app.js"
   }
 }

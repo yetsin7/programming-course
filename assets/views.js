@@ -3,11 +3,11 @@
 
 /** Render a clear first action and the staged learning route. */
 function homeMarkup() {
-  const upcoming = nextLesson();
+  const upcoming = COURSE.lessons.find((lesson) => lesson.id === learnerProgress.lastLesson) || nextLesson();
   let markup = '<section class="hero"><p class="eyebrow">' + escapeHtml(COURSE.subtitle) +
     '</p><h1 tabindex="-1">' + escapeHtml(COURSE.title) + '</h1><p class="hero-description">' +
     escapeHtml(COURSE.description) + '</p><a class="primary" href="#lesson-' + lessonNumber(upcoming.id) +
-    '">' + escapeHtml(translate(learnerProgress.completed.length ? "resume" : "start")) +
+    '">' + escapeHtml(translate(learnerProgress.lastLesson || learnerProgress.completed.length ? "resume" : "start")) +
     ' <span aria-hidden="true">→</span></a><div class="course-stats">';
   for (const [count, key] of [[32, "statsLessons"], [96, "statsExercises"], [5, "statsProjects"]]) {
     markup += "<div><strong>" + count + "</strong><span>" + escapeHtml(translate(key)) + "</span></div>";

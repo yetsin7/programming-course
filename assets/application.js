@@ -1,6 +1,8 @@
 /** Bind the offline reader to navigation and learner-state actions. */
 "use strict";
 let noteSaveTimer;
+const courseSession = createCourseSession("adult-course-session", (hash) =>
+  /^#lesson-\d{2}$/.test(hash) && COURSE.lessons.some((lesson) => hash === "#lesson-" + String(lesson.id).padStart(2, "0")));
 
 /** Resolve a hash to a supported page, avoiding out-of-range lesson identifiers. */
 function currentRoute() {
@@ -79,8 +81,9 @@ function renderApplication(moveFocus = false) {
 
 /** Toggle the small-screen navigation without hiding desktop navigation. */
 function toggleMenu() {
-  const open = !document.body.classList.contains("menu-open");
+  const open = document.getElementById("menu-toggle").getAttribute("aria-expanded") !== "true";
   document.body.classList.toggle("menu-open", open);
+  document.body.classList.toggle("sidebar-collapsed", !open);
   const button = document.getElementById("menu-toggle");
   button.setAttribute("aria-expanded", String(open));
   button.textContent = translate(open ? "closeMenu" : "menu");
@@ -88,13 +91,21 @@ function toggleMenu() {
 
 /** Close the navigation drawer after a destination is selected. */
 function closeMenu() {
+  if (window.matchMedia("(min-width: 641px)").matches) return;
   document.body.classList.remove("menu-open");
+  document.body.classList.add("sidebar-collapsed");
   document.getElementById("menu-toggle").setAttribute("aria-expanded", "false");
   document.getElementById("menu-toggle").textContent = translate("menu");
 }
 
 /** Navigate to the new hash and move focus to the reader's heading. */
-function handleHashChange() { closeMenu(); renderApplication(true); }
+function handleHashChange() {
+  closeMenu();
+  const route = currentRoute();
+  if (route.kind === "lesson") { learnerProgress.lastLesson = route.lesson.id; saveProgress(); }
+  renderApplication(true);
+  courseSession.record();
+}
 
 /** Update a mastery checkbox without replacing the focused element. */
 function handleMainChange(event) {
@@ -134,7 +145,7 @@ function handleQuizSubmit(event) {
   if (previousFeedback) previousFeedback.remove();
   event.target.insertAdjacentHTML("beforeend", '<p class="quiz-feedback" role="status"><strong>' +
     escapeHtml(translate(Number(selected) === route.lesson.quiz.correct ? "quizCorrect" : "quizIncorrect")) +
-    "</strong> " + escapeHtml(route.lesson.quiz.explanation) + "</p>");
+    "</strong> " + (Number(selected) === route.lesson.quiz.correct ? escapeHtml(route.lesson.quiz.explanation) : "") + "</p>");
   const completionButton = document.getElementById("complete-lesson");
   completionButton.disabled = !learnerProgress.completed.includes(route.lesson.id) && !canCompleteLesson(route.lesson);
 }
@@ -157,7 +168,10 @@ async function handleMainClick(event) {
       learnerProgress.completed.splice(learnerProgress.completed.indexOf(identifier), 1);
     } else if (canCompleteLesson(route.lesson)) learnerProgress.completed.push(identifier);
     saveProgress();
+    const readingPosition = window.scrollY;
     renderApplication();
+    window.scrollTo(0, readingPosition);
+    document.getElementById("complete-lesson").focus({ preventScroll: true });
   }
 }
 
@@ -199,8 +213,16 @@ function initializeApplication() {
   document.addEventListener("keydown", handleKeyboard);
   window.addEventListener("hashchange", handleHashChange);
   window.addEventListener("pagehide", saveProgress);
-  closeMenu();
+  courseSession.prepare();
+  const route = currentRoute();
+  if (route.kind === "lesson") { learnerProgress.lastLesson = route.lesson.id; saveProgress(); }
+  if (window.matchMedia("(min-width: 641px)").matches) {
+    document.getElementById("menu-toggle").setAttribute("aria-expanded", "true");
+    document.getElementById("menu-toggle").textContent = translate("closeMenu");
+    document.body.classList.add("menu-open");
+  } else closeMenu();
   renderApplication();
+  courseSession.restore();
 }
 
 /** Close the drawer even when selecting the already active destination. */

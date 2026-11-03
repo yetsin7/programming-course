@@ -116,7 +116,10 @@ dd { margin: 0; color: var(--muted); }
 .reader-footer button { font-size: 11px; }
 .status-message { position: fixed; bottom: 20px; right: 22px; max-width: min(450px, calc(100vw - 44px)); background: var(--ink); color: white; padding: 12px 20px; border-radius: 10px; font-size: 13px; z-index: 40; box-shadow: 0 4px 18px #173b331c; }
 .status-message:empty { display: none; }
-.menu-toggle { display: none; }
+.menu-toggle { display: block; position: fixed; top: 8px; left: 8px; z-index: 30; font-size: 12px; }
+#sidebar { padding-top: 54px; }
+.sidebar-collapsed #sidebar { visibility: hidden; transform: translateX(-100%); }
+.sidebar-collapsed #main-content { margin-left: 0; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 @media (max-width: 850px) {
   #sidebar { width: 272px; }
@@ -127,10 +130,10 @@ dd { margin: 0; color: var(--muted); }
   .definitions > div { grid-template-columns: 1fr; gap: 8px; }
 }
 @media (max-width: 640px) {
-  .menu-toggle { display: block; position: sticky; top: 12px; margin: 12px 0 0 18px; z-index: 30; background: var(--surface); font-size: 12px; }
+  .menu-toggle { display: block; position: fixed; top: 12px; left: 12px; margin: 0; z-index: 30; background: var(--surface); font-size: 12px; }
   #sidebar { width: min(330px, 88vw); visibility: hidden; transform: translateX(-100%); padding-top: 65px; }
   .menu-open #sidebar { visibility: visible; transform: translateX(0); box-shadow: 30px 0 0 100vw #162e2266; }
-  #main-content { margin: 0; padding: 32px 21px 45px; }
+  #main-content { margin: 0; padding: 65px 21px 45px; }
   .hero { padding-top: 0; }
   .hero h1 { font-size: 48px; }
   .hero-description { font-size: 17px; }
