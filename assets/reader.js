@@ -70,18 +70,14 @@ function lessonMarkup(lesson) {
     '<p class="eyebrow">' + escapeHtml(COURSE.phases[lesson.phase]) + " / " +
     escapeHtml(translate("lesson")) + " " + lessonNumber(lesson.id) + '</p><h1 tabindex="-1">' +
     escapeHtml(lesson.title) + '</h1><p class="lesson-meta">' + lesson.minutes + " " +
-    escapeHtml(translate("estimated")) + " · " + escapeHtml(lesson.example) + "</p></header>";
+    escapeHtml(translate("estimated")) + "</p></header>";
   markup += sectionMarkup(translate("objectives"), listMarkup(lesson.objectives), "goal-panel");
   markup += sectionMarkup(translate("concepts"), paragraphsMarkup(lesson.concepts));
   markup += sectionMarkup(translate("example"),
-    '<div class="code-toolbar"><span>' + escapeHtml(lesson.example) +
-    '</span><button data-action="copy">' + escapeHtml(translate("copy")) +
-    '</button></div><pre class="source-code"><code>' + escapeHtml(lesson.code) + "</code></pre>" +
-    "<h3>" + escapeHtml(translate("run")) + "</h3>" + commandMarkup(lesson.command) +
-    (lesson.stdin ? "<h3>" + escapeHtml(translate("input")) + "</h3>" + commandMarkup(lesson.stdin) : "") +
-    "<h3>" + escapeHtml(translate("output")) + "</h3>" + commandMarkup(lesson.output) +
-    '<aside class="external-practice"><strong>' + escapeHtml(translate("externalPracticeTitle")) +
-    '</strong><p>' + escapeHtml(translate("externalPracticeText")) + "</p></aside>");
+    '<div class="code-toolbar"><span>' + escapeHtml(translate("snippetLabel")) +
+    '</span></div><pre class="source-code"><code>' + escapeHtml(lesson.code) + "</code></pre>" +
+    '<aside class="external-practice"><strong>' + escapeHtml(translate("snippetPracticeTitle")) +
+    '</strong><p>' + escapeHtml(translate("snippetPracticeText")) + "</p></aside>");
   markup += sectionMarkup(translate("walkthrough"), listMarkup(lesson.walkthrough, true));
   markup += sectionMarkup(translate("practice"), exercisesMarkup(lesson));
   markup += sectionMarkup(translate("mistakes"), listMarkup(lesson.mistakes), "mistake-panel");

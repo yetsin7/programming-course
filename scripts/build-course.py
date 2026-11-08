@@ -1,13 +1,30 @@
 """Bundle localized course assets for a serverless, offline HTML reader."""
 
+import ast
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def teaching_snippet(source: str) -> str:
+    """Keep only a few meaningful source lines for the learner-facing example."""
+    lines = source.splitlines()
+    tree = ast.parse(source)
+    docstring_lines = set()
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)) and node.body:
+            first_statement = node.body[0]
+            if isinstance(first_statement, ast.Expr) and isinstance(first_statement.value, ast.Constant):
+                if isinstance(first_statement.value.value, str):
+                    docstring_lines.update(range(first_statement.lineno, first_statement.end_lineno + 1))
+    lines = [line for number, line in enumerate(lines, start=1) if number not in docstring_lines]
+    excerpt = [line for line in lines if line.strip()][:4]
+    return "\n".join(excerpt + ["# ... (fragmento; no es el programa completo)"])
+
+
 def build_course() -> None:
-    """Embed authored lessons and code without requiring file-URL fetch access."""
+    """Embed localized lessons and short code excerpts for offline reading."""
     catalog = json.loads((ROOT / "locales/es/catalog.json").read_text(encoding="utf-8"))
     for section, filename in [
         ("plan", "study-plan.json"), ("glossary", "glossary.json"), ("graduation", "graduation.json")
@@ -19,7 +36,12 @@ def build_course() -> None:
     lessons = []
     for lesson_path in sorted((ROOT / "locales/es/lessons").glob("*.json")):
         lesson = json.loads(lesson_path.read_text(encoding="utf-8"))
-        lesson["code"] = (ROOT / lesson["example"]).read_text(encoding="utf-8")
+        source = (ROOT / lesson["example"]).read_text(encoding="utf-8")
+        lesson["code"] = lesson.get("snippet", teaching_snippet(source))
+        lesson.pop("snippet", None)
+        lesson.pop("command", None)
+        lesson.pop("output", None)
+        lesson.pop("example", None)
         lessons.append(lesson)
     catalog["lessons"] = lessons
     serialized = json.dumps(catalog, ensure_ascii=False, separators=(",", ":"))

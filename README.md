@@ -15,9 +15,10 @@ is required.
 
 ## Practice the exercises
 
-Students should copy each example into a `.py` file using VS Code or another
-text editor. Run the file from the editor's integrated terminal, PowerShell, or
-Command Prompt:
+The lessons show short teaching excerpts, not complete programs to copy. Read
+each line, predict what it does, and write your own solution in a `.py` file
+using VS Code or another text editor. Run your file from the editor's integrated
+terminal, PowerShell, or Command Prompt:
 
 ```powershell
 python path\to\exercise.py
@@ -43,5 +44,6 @@ pnpm check
 python scripts/verify-course.py
 ```
 
-The learner-facing interface is localized in Spanish. Source identifiers,
-technical documentation, comments, and diagnostics remain in English.
+The learner-facing explanations and teaching comments are in Spanish. Python
+identifiers, technical diagnostics, and implementation documentation remain in
+English.

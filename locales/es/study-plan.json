@@ -43,7 +43,7 @@
   "help": "Para pedir ayuda: indica lección y ejercicio, pega tu intento pequeño, describe entrada, esperado y observado, y comparte el error completo sin secretos. Puedes escribir: «Estoy en la lección 07, práctica 02. Este es mi intento. Dame una pista y revisa mi razonamiento».",
   "rules": [
     "Trabaja en study-work; los ejemplos y soluciones son referencias.",
-    "Escribe código, comentarios y documentación técnica en inglés; las etiquetas de aplicaciones van en traducciones.",
+    "Usa nombres de variables en inglés cuando el ejercicio lo pida; añade comentarios o docstrings claros para explicar qué hace cada función. En los fragmentos de aprendizaje, usa explicaciones en español.",
     "No cambies políticas de seguridad ni reinstales herramientas para esconder un error de sintaxis.",
     "No uses datos reales ni credenciales de tus aplicaciones para prácticas.",
     "Una lección está dominada cuando completas su lista de criterios, no solo al marcar la casilla."

@@ -150,19 +150,14 @@ function handleQuizSubmit(event) {
   completionButton.disabled = !learnerProgress.completed.includes(route.lesson.id) && !canCompleteLesson(route.lesson);
 }
 
-/** Handle code copy, lesson completion and print actions delegated from the reader. */
-async function handleMainClick(event) {
+/** Handle lesson completion and print actions delegated from the reader. */
+function handleMainClick(event) {
   const button = event.target.closest("[data-action]");
   if (!button) return;
   const route = currentRoute();
   if (button.dataset.action === "print") { window.print(); return; }
   if (route.kind !== "lesson") return;
-  if (button.dataset.action === "copy") {
-    try {
-      await navigator.clipboard.writeText(route.lesson.code);
-      announce(translate("copied"));
-    } catch (error) { announce(translate("copyError")); }
-  } else if (button.dataset.action === "complete") {
+  if (button.dataset.action === "complete") {
     const identifier = route.lesson.id;
     if (learnerProgress.completed.includes(identifier)) {
       learnerProgress.completed.splice(learnerProgress.completed.indexOf(identifier), 1);

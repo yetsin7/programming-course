@@ -40,12 +40,28 @@
     "Relación entre claves y valores."
   ],
   [
+    "Docstring",
+    "Nota entre comillas triples que explica qué hace una función, clase o módulo."
+  ],
+  [
     "Entorno virtual",
     "Intérprete y paquetes aislados para un proyecto."
   ],
   [
     "Excepción",
-    "Señal de fallo en ejecución que puede propagarse o manejarse."
+    "Aviso que Python produce cuando algo sale mal mientras el programa se ejecuta; puedes responder a un tipo concreto de aviso."
+  ],
+  [
+    "except",
+    "Palabra que inicia la respuesta a un error esperado que ocurrió dentro de try."
+  ],
+  [
+    "try",
+    "Palabra que inicia el bloque de instrucciones que Python intenta ejecutar y que podría producir un error."
+  ],
+  [
+    "ValueError",
+    "Tipo de excepción que indica que una operación recibió un valor que no puede usar, como convertir \"tres\" en un entero."
   ],
   [
     "Factory",
@@ -80,6 +96,10 @@
     "Archivo Python que ofrece operaciones importables."
   ],
   [
+    "None",
+    "Valor especial de Python que significa «no hay un resultado o dato aquí»; no equivale a cero."
+  ],
+  [
     "Parámetro",
     "Nombre de una entrada declarada por una función."
   ],
@@ -90,6 +110,10 @@
   [
     "Refactorización",
     "Cambio de estructura que conserva comportamiento observable."
+  ],
+  [
+    "raise",
+    "Palabra que detiene la operación actual y comunica un error con una excepción."
   ],
   [
     "Regresión",
