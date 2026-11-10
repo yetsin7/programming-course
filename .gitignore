@@ -11,3 +11,5 @@ node_modules/
 dist/
 out/
 .claude/
+/python/
+/python-for-children/

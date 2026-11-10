@@ -4,67 +4,41 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>Cursos de Python · Elige tu camino</title>
+  <title>Cursos de Python · Nuevas ubicaciones</title>
   <style>
-    :root { --ink: #1d2433; --muted: #5a6478; --paper: #f6f4ee; --card: #ffffff; --adult: #1f5fa8; --child: #c2410c; }
+    :root { color-scheme: light; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--paper); line-height: 1.6; }
-    main { max-width: 960px; margin: 0 auto; padding: 48px 16px 64px; }
-    h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1.2; margin: 0 0 12px; text-wrap: balance; }
-    .lead { font-size: 1.15rem; color: var(--muted); max-width: 62ch; margin: 0 0 32px; }
-    .choices { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-    .choice { display: flex; flex-direction: column; gap: 10px; padding: 28px; border-radius: 18px; background: var(--card); border: 2px solid #e2ddd0; color: inherit; text-decoration: none; }
-    .choice:hover, .choice:focus-visible { border-color: currentColor; outline: none; box-shadow: 0 6px 24px rgb(0 0 0 / 8%); }
-    .choice .symbol { font-size: 2.6rem; line-height: 1; }
-    .choice h2 { margin: 0; font-size: 1.45rem; }
-    .choice p { margin: 0; color: var(--muted); }
-    .choice ul { margin: 4px 0 0; padding-left: 20px; color: var(--muted); }
-    .choice .go { margin-top: auto; padding-top: 14px; font-weight: 700; font-size: 1.1rem; }
-    .adult .go, .adult h2 { color: var(--adult); }
-    .child .go, .child h2 { color: var(--child); }
-    .help { margin-top: 36px; padding: 20px 24px; border-radius: 14px; background: #fffbe8; border: 1px solid #eadf9f; }
-    .help h2 { margin: 0 0 6px; font-size: 1.1rem; }
-    .help p { margin: 0; }
+    body { margin: 0; color: #17211d; background: #f4f1e9; }
+    main { width: min(920px, calc(100% - 32px)); margin: 0 auto; padding: 64px 0; }
+    h1 { max-width: 18ch; margin: 0 0 16px; font: 700 clamp(2rem, 6vw, 4.5rem)/1.02 Georgia, serif; }
+    .lead { max-width: 64ch; margin: 0 0 36px; color: #55615b; font-size: 1.15rem; }
+    .courses { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; }
+    .course { display: flex; min-height: 230px; flex-direction: column; padding: 28px; color: inherit; background: #fff; border: 1px solid #d8d4c8; border-radius: 18px; text-decoration: none; }
+    .course:hover, .course:focus-visible { border-color: #23654e; outline: 3px solid #bfe6d8; outline-offset: 2px; }
+    .course span { font-size: 2.5rem; }
+    .course h2 { margin: 18px 0 10px; font-size: 1.35rem; }
+    .course p { margin: 0; color: #606b65; }
+    .course strong { margin-top: auto; padding-top: 22px; color: #176247; }
   </style>
-  <script>
-    /* Old links pointed lessons at the site root; forward them to the adult course. */
-    if (/^#(lesson-\d{2}|project-\d|projects|plan|glossary|graduation)$/.test(location.hash)) {
-      location.replace("python/index.html" + location.hash);
-    }
-  </script>
 </head>
 <body>
   <main>
-    <h1>Aprende a programar con Python, desde cero</h1>
-    <p class="lead">No necesitas saber nada antes de empezar. Si sabes encender la computadora, ya puedes comenzar. Elige el curso que mejor va contigo: cada uno te lleva de la mano, paso a paso.</p>
-    <div class="choices">
-      <a class="choice child" href="python-for-children/index.html">
-        <span class="symbol" aria-hidden="true">🤖</span>
-        <h2>Club Python · para niñas y niños</h2>
-        <p>Una aventura con el robot Pipo, pensada para aprender desde los 8 o 9 años con una persona adulta cerca.</p>
-        <ul>
-          <li>32 misiones cortas con historias y estrellas.</li>
-          <li>Cada línea de código explicada con palabras sencillas.</li>
-          <li>Guía ilustrada para preparar la computadora.</li>
-        </ul>
-        <span class="go">Entrar al Club Python →</span>
+    <h1>Ahora cada curso tiene su propio espacio</h1>
+    <p class="lead">Separamos los cursos para que cada uno tenga su propia interfaz, archivos, avance y publicación. Elige el que quieres abrir.</p>
+    <div class="courses">
+      <a class="course" href="https://yetsin7.github.io/python-course/">
+        <span aria-hidden="true">🧭</span>
+        <h2>Python para jóvenes y personas adultas</h2>
+        <p>32 lecciones, ejercicios y proyectos para aprender desde cero.</p>
+        <strong>Abrir el curso →</strong>
       </a>
-      <a class="choice adult" href="python/index.html">
-        <span class="symbol" aria-hidden="true">🧭</span>
-        <h2>Python · para jóvenes y personas adultas</h2>
-        <p>Una ruta completa: de tu primera instrucción a una aplicación propia que puedes mostrar.</p>
-        <ul>
-          <li>32 lecciones, 96 ejercicios y 5 proyectos.</li>
-          <li>Cada tema empieza «en palabras simples».</li>
-          <li>Guía «Empieza aquí» para instalar y ejecutar.</li>
-        </ul>
-        <span class="go">Entrar al curso de Python →</span>
+      <a class="course" href="https://yetsin7.github.io/python-for-children/">
+        <span aria-hidden="true">🤖</span>
+        <h2>Club Python para niñas y niños</h2>
+        <p>32 misiones guiadas con historias, práctica y estrellas.</p>
+        <strong>Abrir el club →</strong>
       </a>
     </div>
-    <aside class="help">
-      <h2>¿No sabes cuál elegir?</h2>
-      <p>Si quien aprende tiene menos de 12 años, empieza por el Club Python. Si es mayor, o ya terminó el Club, entra al curso de Python. Los dos guardan el avance en este navegador, cada uno por separado.</p>
-    </aside>
   </main>
 </body>
 </html>
