@@ -27,21 +27,28 @@ def build_course() -> None:
     """Embed localized lessons and short code excerpts for offline reading."""
     catalog = json.loads((ROOT / "locales/es/catalog.json").read_text(encoding="utf-8"))
     for section, filename in [
-        ("plan", "study-plan.json"), ("glossary", "glossary.json"), ("graduation", "graduation.json")
+        ("plan", "study-plan.json"), ("glossary", "glossary.json"), ("graduation", "graduation.json"),
+        ("setup", "getting-started.json"),
     ]:
         catalog[section] = json.loads((ROOT / "locales/es" / filename).read_text(encoding="utf-8"))
     catalog["projects"] = []
     for project_path in sorted((ROOT / "locales/es/projects").glob("*.json")):
         catalog["projects"].append(json.loads(project_path.read_text(encoding="utf-8")))
+    notes = json.loads((ROOT / "locales/es/beginner-notes.json").read_text(encoding="utf-8"))
+    notes_by_lesson = {note["id"]: note for note in notes}
     lessons = []
     for lesson_path in sorted((ROOT / "locales/es/lessons").glob("*.json")):
         lesson = json.loads(lesson_path.read_text(encoding="utf-8"))
         source = (ROOT / lesson["example"]).read_text(encoding="utf-8")
         lesson["code"] = lesson.get("snippet", teaching_snippet(source))
         lesson.pop("snippet", None)
-        lesson.pop("command", None)
-        lesson.pop("output", None)
+        lesson["run"] = {
+            "command": lesson.pop("command"), "output": lesson.pop("output"),
+            "answers": lesson.pop("stdin", "").splitlines(),
+        }
         lesson.pop("example", None)
+        lesson["plain"] = notes_by_lesson[lesson["id"]]["plain"]
+        lesson["terms"] = notes_by_lesson[lesson["id"]]["terms"]
         lessons.append(lesson)
     catalog["lessons"] = lessons
     serialized = json.dumps(catalog, ensure_ascii=False, separators=(",", ":"))

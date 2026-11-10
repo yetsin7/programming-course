@@ -18,7 +18,7 @@ function currentRoute() {
       if (project.id === Number(projectMatch[1])) return { kind: "project", project };
     }
   }
-  if (["projects", "plan", "glossary", "graduation"].includes(hash)) return { kind: hash };
+  if (["setup", "projects", "plan", "glossary", "graduation"].includes(hash)) return { kind: hash };
   return { kind: "home" };
 }
 
@@ -62,6 +62,7 @@ function renderApplication(moveFocus = false) {
   let markup;
   if (route.kind === "lesson") markup = lessonMarkup(route.lesson);
   else if (route.kind === "project") markup = projectMarkup(route.project);
+  else if (route.kind === "setup") markup = setupMarkup();
   else if (route.kind === "projects") markup = projectsMarkup();
   else if (route.kind === "plan") markup = planMarkup();
   else if (route.kind === "graduation") markup = graduationMarkup();
@@ -190,7 +191,7 @@ function initializeApplication() {
     document.getElementById(key === "exportProgress" ? "export-progress" : "import-progress").textContent = translate(key);
   }
   let primaryMarkup = "";
-  for (const key of ["home", "projects", "plan", "glossary", "graduation"]) {
+  for (const key of ["home", "setup", "projects", "plan", "glossary", "graduation"]) {
     primaryMarkup += '<a href="#' + key + '">' + escapeHtml(translate(key)) + "</a>";
   }
   document.getElementById("primary-navigation").innerHTML = primaryMarkup;

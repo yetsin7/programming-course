@@ -1,49 +1,88 @@
 # Programming Course
 
-This repository contains two static Python courses:
+Two independent, static Python courses in Spanish for absolute beginners. Each
+course lives in its own folder and works on its own; neither loads files from
+the other.
 
-- The adult course starts at `index.html` and includes 32 lessons, exercises,
-  projects, and progress tracking.
-- The child course starts at `python-for-children/index.html` and includes 32
-  guided missions with age-appropriate examples and questions.
+| Folder | Audience | Entry point |
+| --- | --- | --- |
+| [`python/`](python/) | Teenagers and adults | `python/index.html` |
+| [`python-for-children/`](python-for-children/) | Children from about 8 years old, with an adult nearby | `python-for-children/index.html` |
+
+The root `index.html` is only a chooser page that links to both courses.
+
+## Repository layout
+
+```text
+programming-course/
+├── index.html               Chooser page (also forwards old lesson links)
+├── package.json             JavaScript checks for both courses
+├── python/                  Adult course
+│   ├── index.html           Offline reader
+│   ├── assets/              Reader code, styles and the generated bundle
+│   ├── locales/es/          Lesson, project and guide sources (edit these)
+│   ├── examples/            One runnable program per lesson
+│   ├── practice/            Starter files for checkable exercises
+│   ├── solutions/           Reference solutions
+│   ├── projects/            Five reference projects with tests
+│   └── scripts/             Build and verification scripts
+└── python-for-children/     Child course ("Club Python")
+    ├── index.html           Mission reader
+    ├── lessons.js           Missions 1–12
+    ├── advanced-lessons.js  Missions 13–32
+    ├── guide-basics.js      Line-by-line guide for missions 1–12
+    ├── guide-advanced.js    Line-by-line guide for missions 13–32
+    ├── setup-guide.js       "Prepara tu nave" preparation guide
+    └── check-content.js     Content completeness check
+```
+
+## What each course teaches a complete beginner
+
+Both courses assume the learner only knows how to switch the computer on.
+
+- **Setup guide first.** The adult course has "Empieza aquí" and the child
+  course has "Prepara tu nave". They explain files and folders, the keyboard
+  symbols used in code, installing Python, and writing, saving and running a
+  first program with IDLE.
+- **Plain words before technical words.** Every adult lesson opens with an
+  everyday analogy ("En palabras simples") and a short vocabulary list. Every
+  child mission lists its new words with their meaning, including the English
+  keywords.
+- **Code read line by line.** Child missions explain each revealed line of the
+  example and show exactly what appears on screen. Adult lessons show the
+  command to run the full example and its exact expected output.
+- **Help when something fails.** Each child mission ends with the most common
+  mistake and its fix. The adult setup guide explains how to read the usual
+  Python error messages.
 
 ## Open the courses
 
-Use the published GitHub Pages site or open either HTML entry point directly in
-a browser. No application server, Electron runtime, or in-browser Python console
-is required.
-
-## Practice the exercises
-
-The lessons show short teaching excerpts, not complete programs to copy. Read
-each line, predict what it does, and write your own solution in a `.py` file
-using VS Code or another text editor. Run your file from the editor's integrated
-terminal, PowerShell, or Command Prompt:
-
-```powershell
-python path\to\exercise.py
-```
-
-If `python` is not available on Windows, try `py` or install Python from
-[python.org](https://www.python.org/downloads/).
+Use the published GitHub Pages site, or open `index.html` in a browser and
+choose a course. No application server, account or network access is needed.
+Progress is stored in the browser, separately for each course.
 
 ## Development checks
 
-Rebuild the localized adult-course bundle after editing files under
-`locales/es/`:
+After editing files under `python/locales/es/`, rebuild the adult bundle:
 
 ```powershell
-python scripts/build-course.py
+python python/scripts/build-course.py
 ```
 
-Run the JavaScript and Python validation checks before publishing:
+Before publishing, run every check:
 
 ```powershell
 pnpm install
 pnpm check
-python scripts/verify-course.py
+python python/scripts/verify-course.py
 ```
 
-The learner-facing explanations and teaching comments are in Spanish. Python
-identifiers, technical diagnostics, and implementation documentation remain in
-English.
+`pnpm check` validates JavaScript syntax for both courses and runs
+`python-for-children/check-content.js`, which requires every mission to have
+vocabulary, one explanation per code line, an expected output and a
+troubleshooting tip. `verify-course.py` runs the 32 adult examples and compares
+their output exactly, checks the beginner notes and setup guide, and runs the
+project tests. Its report is written to `python/build/verification.json`.
+
+Learner-facing text and teaching comments are in Spanish. Python identifiers,
+technical diagnostics and implementation documentation remain in English.

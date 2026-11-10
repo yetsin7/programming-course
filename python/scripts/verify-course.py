@@ -70,6 +70,24 @@ def verify_lessons() -> int:
     return len(lessons)
 
 
+def verify_beginner_material() -> int:
+    """Require a plain-language summary and new vocabulary for every lesson, plus the setup guide."""
+    notes = json.loads((ROOT / "locales/es/beginner-notes.json").read_text(encoding="utf-8"))
+    if [note["id"] for note in notes] != list(range(1, 33)):
+        raise AssertionError("Beginner notes must cover lessons 1 to 32 in order.")
+    for note in notes:
+        if len(note["plain"]) < 120 or len(note["terms"]) < 3:
+            raise AssertionError(f"Beginner note is too thin: lesson {note['id']}")
+        for pair in note["terms"]:
+            if len(pair) != 2 or not all(pair):
+                raise AssertionError(f"Invalid vocabulary entry: lesson {note['id']}")
+    setup = json.loads((ROOT / "locales/es/getting-started.json").read_text(encoding="utf-8"))
+    for section in setup["sections"]:
+        if not section["title"] or not (section.get("steps") or section.get("definitions")):
+            raise AssertionError(f"Setup section has no actionable content: {section.get('title')}")
+    return len(notes)
+
+
 def verify_projects(api_python: Path | None) -> list[dict]:
     """Run project contracts in separate processes so similarly named modules cannot collide."""
     records = []
@@ -98,7 +116,7 @@ def main() -> None:
     api_python = options.api_python.resolve() if options.api_python else None
     report = {
         "python": sys.version.split()[0], "authored_files_checked": verify_sources(),
-        "examples_passed": verify_lessons(), "projects": verify_projects(api_python),
+        "examples_passed": verify_lessons(), "beginner_notes": verify_beginner_material(), "projects": verify_projects(api_python),
         "public_deployment": "not_run", "docker": "not_run", "github_actions": "not_run",
     }
     (ROOT / "build").mkdir(exist_ok=True)

@@ -12,7 +12,10 @@ function homeMarkup() {
   for (const [count, key] of [[32, "statsLessons"], [96, "statsExercises"], [5, "statsProjects"]]) {
     markup += "<div><strong>" + count + "</strong><span>" + escapeHtml(translate(key)) + "</span></div>";
   }
-  markup += '</div></section><section class="reader-section"><h2>' + escapeHtml(translate("journey")) +
+  markup += "</div></section>" + sectionMarkup(translate("setupCallTitle"),
+    "<p>" + escapeHtml(translate("setupCallText")) + '</p><a class="secondary" href="#setup">' +
+    escapeHtml(translate("setupCallLink")) + " →</a>", "plain-panel");
+  markup += '<section class="reader-section"><h2>' + escapeHtml(translate("journey")) +
     '</h2><div class="phase-grid">';
   for (let phase = 0; phase < COURSE.phases.length; phase += 1) {
     const firstId = phase * 4 + 1;
@@ -30,6 +33,21 @@ function homeMarkup() {
   markup += sectionMarkup(translate("whyPython"), paragraphsMarkup([COURSE.languageChoice]), "goal-panel");
   markup += sectionMarkup(translate("daily"), listMarkup(COURSE.plan.firstSession, true));
   return markup + '<p class="local-notice">' + escapeHtml(translate("localNotice")) + "</p>";
+}
+
+/** Render the zero-knowledge setup guide: vocabulary, keyboard, installation and first run. */
+function setupMarkup() {
+  const setup = COURSE.setup;
+  let markup = pageHeading(setup.title, setup.intro);
+  for (const section of setup.sections) {
+    let contents = paragraphsMarkup(section.paragraphs || []);
+    if (section.definitions) contents += definitionsMarkup(section.definitions);
+    if (section.steps) contents += listMarkup(section.steps, true);
+    if (section.note) contents += '<p class="setup-note">' + escapeHtml(section.note) + "</p>";
+    markup += sectionMarkup(section.title, contents);
+  }
+  return markup + sectionMarkup(translate("start"), "<p>" + escapeHtml(setup.next) +
+    '</p><a class="primary" href="#lesson-01">' + escapeHtml(translate("lesson")) + " 01 →</a>", "goal-panel");
 }
 
 /** Render all projects in their recommended completion order. */

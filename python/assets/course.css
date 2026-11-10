@@ -159,3 +159,8 @@ dd { margin: 0; color: var(--muted); }
   .source-code, .command { background: #f3f3f3; color: black; }
   .reader-section, .exercise, .definitions > div { break-inside: avoid; }
 }
+.plain-panel { border: 1px solid #d9d2ee; border-left: 6px solid #6a55b8; border-radius: 10px; padding: 24px 28px; background: #f3f0fb; font-size: 17px; }
+.plain-panel > :last-child { margin-bottom: 0; }
+.run-steps li { margin: 14px 0; }
+.run-steps .command { margin: 8px 0 0; }
+.setup-note { border-left: 4px solid #b16d2d; padding: 10px 16px; background: #fbf4e6; border-radius: 0 8px 8px 0; }

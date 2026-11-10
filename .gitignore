@@ -10,3 +10,4 @@ study-work/
 node_modules/
 dist/
 out/
+.claude/

@@ -4,7 +4,7 @@
   "schedule": "Plan orientativo: 24 a 36 semanas con 6–8 horas por semana, unas 150–220 horas incluyendo repetición y proyectos. Si dispones de 3 horas semanales, reserva aproximadamente el doble de semanas. Los tiempos de cada lección son puntos de partida; manda tu comprensión.",
   "firstSession": [
     "Abre PowerShell y ejecuta python --version.",
-    "Ejecuta Set-Location C:\\Dev\\programming-course.",
+    "Ejecuta Set-Location con la ubicación donde guardaste este curso; por ejemplo, Set-Location C:\\Dev\\python-course.",
     "Lee la lección 01 y predice qué mostrará el ejemplo.",
     "Ejecuta python examples/01-first-program.py.",
     "Crea study-work, guarda una copia modificada y ejecútala.",

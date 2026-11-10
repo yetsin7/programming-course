@@ -10,7 +10,7 @@
     "Separar comandos del sistema e instrucciones Python."
   ],
   "concepts": [
-    "La carpeta actual de la terminal es el punto desde el que se interpretan rutas relativas. C:\\Dev\\programming-course es una ruta absoluta: empieza en una unidad. examples/02-terminal-and-files.py es relativa: depende de estar dentro del curso. Si una ruta tiene espacios, en PowerShell ponla entre comillas. Get-Location muestra dónde estás; Get-ChildItem muestra qué archivos hay.",
+    "La carpeta actual de la terminal es el punto desde el que se interpretan rutas relativas. C:\\Dev\\python-course es una ruta absoluta: empieza en una unidad. examples/02-terminal-and-files.py es relativa: depende de estar dentro del curso. Si una ruta tiene espacios, en PowerShell ponla entre comillas. Get-Location muestra dónde estás; Get-ChildItem muestra qué archivos hay.",
     "Un archivo llamado exercise.py.txt sigue siendo texto con extensión .txt. En el Explorador activa Ver > Mostrar > Extensiones de nombre de archivo y comprueba el nombre completo. Crea study-work para tus intentos; conserva los ejemplos originales como referencia. Guarda cada práctica con un nombre inglés que describa su propósito, por ejemplo notebook-cost.py.",
     "Abre IDLE, elige File > New File y escribe dos instrucciones print. Guarda el archivo, no solo la ventana interactiva. Ejecutar un archivo repite todas sus instrucciones desde arriba. La consola interactiva, marcada con >>>, evalúa una instrucción por vez; no copies >>> al archivo. Para salir de esa consola escribe exit().",
     "En PowerShell ejecuta python study-work/notebook-cost.py. Si aparece «can't open file», comprueba carpeta, nombre y extensión con Get-ChildItem. Si aparece SyntaxError, Python sí encontró el archivo y el problema está dentro del código. Esta distinción evita reinstalar Python para resolver un error de escritura.",
@@ -31,7 +31,7 @@
     [
       "Ejecuta el archivo desde C:\\Dev usando una ruta absoluta.",
       "Una ruta absoluta incluye la unidad.",
-      "python C:\\Dev\\programming-course\\examples\\02-terminal-and-files.py produce las mismas dos líneas."
+      "python C:\\Dev\\python-course\\examples\\02-terminal-and-files.py produce las mismas dos líneas."
     ],
     [
       "Provoca un error escribiendo print(2 + ) en una copia y después corrígelo.",

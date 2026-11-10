@@ -64,6 +64,19 @@ function referencesMarkup(lesson) {
   return markup + "</ul>";
 }
 
+/** Explain how to run the full example and what the learner should observe. */
+function runMarkup(lesson) {
+  const steps = [escapeHtml(translate("runOpen")), escapeHtml(translate("runFolder")),
+    escapeHtml(translate("runCommand")) + commandMarkup(lesson.run.command)];
+  if (lesson.run.answers.length) {
+    steps.push(escapeHtml(translate("runAnswers")) + commandMarkup(lesson.run.answers.join("\n")));
+  }
+  steps.push(escapeHtml(translate("runOutput")) + commandMarkup(lesson.run.output.trimEnd()));
+  return "<p>" + escapeHtml(translate("runIntro")) + '</p><ol class="run-steps"><li>' + steps.join("</li><li>") +
+    '</li></ol><p class="muted">' + escapeHtml(translate("runDifferent")) + ' <a href="#setup">' +
+    escapeHtml(translate("setupCallLink")) + "</a></p>";
+}
+
 /** Compose the full reader without loading external fonts, libraries or lesson files. */
 function lessonMarkup(lesson) {
   let markup = '<article class="lesson" data-lesson="' + lesson.id + '"><header class="page-heading">' +
@@ -72,6 +85,8 @@ function lessonMarkup(lesson) {
     escapeHtml(lesson.title) + '</h1><p class="lesson-meta">' + lesson.minutes + " " +
     escapeHtml(translate("estimated")) + "</p></header>";
   markup += sectionMarkup(translate("objectives"), listMarkup(lesson.objectives), "goal-panel");
+  markup += sectionMarkup(translate("plain"), paragraphsMarkup([lesson.plain]), "plain-panel");
+  markup += sectionMarkup(translate("terms"), definitionsMarkup(lesson.terms));
   markup += sectionMarkup(translate("concepts"), paragraphsMarkup(lesson.concepts));
   markup += sectionMarkup(translate("example"),
     '<div class="code-toolbar"><span>' + escapeHtml(translate("snippetLabel")) +
@@ -79,6 +94,7 @@ function lessonMarkup(lesson) {
     '<aside class="external-practice"><strong>' + escapeHtml(translate("snippetPracticeTitle")) +
     '</strong><p>' + escapeHtml(translate("snippetPracticeText")) + "</p></aside>");
   markup += sectionMarkup(translate("walkthrough"), listMarkup(lesson.walkthrough, true));
+  markup += sectionMarkup(translate("run"), runMarkup(lesson));
   markup += sectionMarkup(translate("practice"), exercisesMarkup(lesson));
   markup += sectionMarkup(translate("mistakes"), listMarkup(lesson.mistakes), "mistake-panel");
   markup += sectionMarkup(translate("quiz"), quizMarkup(lesson));
